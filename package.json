@@ -1,0 +1,31 @@
+{
+  "name": "awesome-state",
+  "version": "0.0.1",
+  "description": "A boilerplate-free global state management for React, built on top of redux/toolkit.",
+  "main": "./dist/index.tsx",
+  "module": "./dist/index.tsx",
+  "scripts": {
+    "build": "tsup src/index.tsx",
+    "start": "npm run build -- --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "exports": {
+    "default": "./dist/index.tsx",
+    "import": "./dist/index.tsx"
+  },
+  "type": "module",
+  "devDependencies": {
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.3",
+    "react-redux": "^8.0.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
