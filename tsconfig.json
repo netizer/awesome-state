@@ -6,8 +6,9 @@
       "dom.iterable",
       "esnext"
     ],
+    "declaration": true,
     "allowJs": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -22,7 +23,10 @@
 
     "noUncheckedIndexedAccess": true
   },
-  "include": [
-    "src"
-  ]
+  "paths": {
+    "awesome-state": ["src/**/*"],
+    "@internal/*": ["src/*"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
