@@ -1,4 +1,3 @@
-"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -7,10 +6,6 @@ var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
@@ -28,7 +23,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // node_modules/react/cjs/react.production.min.js
 var require_react_production_min = __commonJS({
@@ -329,7 +323,7 @@ var require_react_production_min = __commonJS({
 
 // node_modules/react/cjs/react.development.js
 var require_react_development = __commonJS({
-  "node_modules/react/cjs/react.development.js"(exports, module2) {
+  "node_modules/react/cjs/react.development.js"(exports, module) {
     "use strict";
     if (process.env.NODE_ENV !== "production") {
       (function() {
@@ -1985,8 +1979,8 @@ var require_react_development = __commonJS({
           if (enqueueTaskImpl === null) {
             try {
               var requireString = ("require" + Math.random()).slice(0, 7);
-              var nodeRequire = module2 && module2[requireString];
-              enqueueTaskImpl = nodeRequire.call(module2, "timers").setImmediate;
+              var nodeRequire = module && module[requireString];
+              enqueueTaskImpl = nodeRequire.call(module, "timers").setImmediate;
             } catch (_err) {
               enqueueTaskImpl = function(callback) {
                 {
@@ -2202,12 +2196,12 @@ var require_react_development = __commonJS({
 
 // node_modules/react/index.js
 var require_react = __commonJS({
-  "node_modules/react/index.js"(exports, module2) {
+  "node_modules/react/index.js"(exports, module) {
     "use strict";
     if (process.env.NODE_ENV === "production") {
-      module2.exports = require_react_production_min();
+      module.exports = require_react_production_min();
     } else {
-      module2.exports = require_react_development();
+      module.exports = require_react_development();
     }
   }
 });
@@ -3120,26 +3114,21 @@ var require_react_jsx_runtime_development = __commonJS({
 
 // node_modules/react/jsx-runtime.js
 var require_jsx_runtime = __commonJS({
-  "node_modules/react/jsx-runtime.js"(exports, module2) {
+  "node_modules/react/jsx-runtime.js"(exports, module) {
     "use strict";
     if (process.env.NODE_ENV === "production") {
-      module2.exports = require_react_jsx_runtime_production_min();
+      module.exports = require_react_jsx_runtime_production_min();
     } else {
-      module2.exports = require_react_jsx_runtime_development();
+      module.exports = require_react_jsx_runtime_development();
     }
   }
 });
 
 // src/index.tsx
-var src_exports = {};
-__export(src_exports, {
-  register: () => register
-});
-module.exports = __toCommonJS(src_exports);
-var import_react_redux = require("react-redux");
-var import_react_redux2 = require("react-redux");
-var import_toolkit = require("@reduxjs/toolkit");
-var import_jsx_runtime = __toESM(require_jsx_runtime());
+var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
+import { useSelector } from "react-redux";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
 function extractReducers(slices) {
   return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, value.reducer]));
 }
@@ -3149,10 +3138,10 @@ function extractActions(slices) {
 function register(slices) {
   const reducers = extractReducers(slices);
   const actions = extractActions(slices);
-  const store = (0, import_toolkit.configureStore)({ reducer: reducers });
+  const store = configureStore({ reducer: reducers });
   const dispatch = actions;
-  const useStore = (fn) => (0, import_react_redux.useSelector)(fn);
-  const StoreProvider = (props) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react_redux2.Provider, { store, children: props.children });
+  const useStore = (fn) => useSelector(fn);
+  const StoreProvider = (props) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Provider, { store, children: props.children });
   const getState = () => {
     return store.getState();
   };
@@ -3165,10 +3154,9 @@ function register(slices) {
     dispatch
   };
 }
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
+export {
   register
-});
+};
 /*! Bundled license information:
 
 react/cjs/react.production.min.js:
@@ -3215,3 +3203,4 @@ react/cjs/react-jsx-runtime.development.js:
    * LICENSE file in the root directory of this source tree.
    *)
 */
+//# sourceMappingURL=index.js.map
