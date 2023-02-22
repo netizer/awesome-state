@@ -3132,13 +3132,18 @@ import { configureStore } from "@reduxjs/toolkit";
 function extractReducers(slices) {
   return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, value.reducer]));
 }
-function extractActions(slices) {
-  return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, value.actions]));
+function wrapWithDispatch(action, store) {
+  return (state, payload) => {
+    store.dispatch(action(state, payload));
+  };
+}
+function extractActions(slices, store) {
+  return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, wrapWithDispatch(value.actions, store)]));
 }
 function register(slices) {
   const reducers = extractReducers(slices);
-  const actions = extractActions(slices);
   const store = configureStore({ reducer: reducers });
+  const actions = extractActions(slices, store);
   const dispatch = actions;
   const useStore = (fn) => useSelector(fn);
   const StoreProvider = (props) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Provider, { store, children: props.children });

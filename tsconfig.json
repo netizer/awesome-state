@@ -21,11 +21,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    "noUncheckedIndexedAccess": true
-  },
-  "paths": {
-    "awesome-state": ["src/**/*"],
-    "@internal/*": ["src/*"]
+    "noUncheckedIndexedAccess": true,
+    "outDir": "./dist"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

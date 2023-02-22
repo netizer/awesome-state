@@ -7,8 +7,14 @@ function extractReducers<S extends Record<string, any>>(slices: S) {
   return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, value.reducer])) as {[W in keyof typeof slices]: (typeof slices)[W]["reducer"]}
 }
 
-function extractActions<S extends Record<string, any>>(slices: S) {
-  return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, value.actions])) as {[W in keyof typeof slices]: (typeof slices)[W]["actions"]}
+function wrapWithDispatch<State extends any, Payload extends any, S extends (state: State, payload: Payload) => any, T extends { dispatch: (action: S) => void}>(action: S, store: T) {
+  return ((state: State, payload: Payload) => {
+    store.dispatch(action(state, payload))
+  }) as S
+}
+
+function extractActions<S extends Record<string, any>, T extends { dispatch: (action: any) => void }>(slices: S, store: T) {
+  return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, wrapWithDispatch(value.actions, store)])) as {[W in keyof typeof slices]: (typeof slices)[W]["actions"]}
 }
 
 /* A fix for the wrong type of the getState result - see register */
@@ -35,8 +41,8 @@ fixes the issue.
 */
 export function register<FixStateStates extends Record<string, any>, S extends Record<string, any>>(slices: FixState<FixStateStates> & S) {
   const reducers = extractReducers(slices)
-  const actions = extractActions(slices)
   const store = configureStore({ reducer: reducers })
+  const actions = extractActions(slices, store)
 
   const dispatch = actions
 
