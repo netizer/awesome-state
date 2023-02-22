@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { TypedUseSelectorHook, useSelector } from 'react-redux'
 import { Provider } from 'react-redux';
 import { configureStore, Reducer } from '@reduxjs/toolkit'
 
@@ -7,14 +7,18 @@ function extractReducers<S extends Record<string, any>>(slices: S) {
   return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, value.reducer])) as {[W in keyof typeof slices]: (typeof slices)[W]["reducer"]}
 }
 
-function wrapWithDispatch<State extends any, Payload extends any, S extends (state: State, payload: Payload) => any, T extends { dispatch: (action: S) => void}>(action: S, store: T) {
-  return ((state: State, payload: Payload) => {
-    store.dispatch(action(state, payload))
+function wrapWithDispatch<State extends any, Payload extends any, S extends (payload: Payload) => any, T extends { dispatch: (action: S) => void}>(action: S, store: T) {
+  return ((payload: Payload) => {
+    store.dispatch(action(payload))
   }) as S
 }
 
+function wrapFunctionsWithDispatch<S extends Record<string, any>>(actions: S, store: any) {
+  return Object.fromEntries(Object.entries(actions).map(([key, value]) => [key, wrapWithDispatch(value, store)]))
+}
+
 function extractActions<S extends Record<string, any>, T extends { dispatch: (action: any) => void }>(slices: S, store: T) {
-  return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, wrapWithDispatch(value.actions, store)])) as {[W in keyof typeof slices]: (typeof slices)[W]["actions"]}
+  return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, wrapFunctionsWithDispatch(value.actions, store)])) as {[W in keyof typeof slices]: (typeof slices)[W]["actions"]}
 }
 
 /* A fix for the wrong type of the getState result - see register */
@@ -46,7 +50,7 @@ export function register<FixStateStates extends Record<string, any>, S extends R
 
   const dispatch = actions
 
-  const useStore = (fn: () => any) => useSelector(fn)
+  const useStore: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector
   const StoreProvider = (props: any) => (
     <Provider store={store}>
       {props.children}
@@ -63,5 +67,6 @@ export function register<FixStateStates extends Record<string, any>, S extends R
     // For actions
     getState,
     dispatch,
+    store
   }
 }

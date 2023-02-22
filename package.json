@@ -1,6 +1,6 @@
 {
   "name": "awesome-state",
-  "version": "0.0.6",
+  "version": "0.0.15",
   "description": "A boilerplate-free global state management for React, built on top of redux/toolkit.",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -13,8 +13,8 @@
   "author": "",
   "license": "MIT",
   "exports": {
-    "default": "./dist/index.js",
-    "import": "./dist/index.js"
+    "import": "./dist/index.js",
+    "default": "./dist/index.js"
   },
   "type": "module",
   "devDependencies": {

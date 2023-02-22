@@ -3133,19 +3133,22 @@ function extractReducers(slices) {
   return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, value.reducer]));
 }
 function wrapWithDispatch(action, store) {
-  return (state, payload) => {
-    store.dispatch(action(state, payload));
+  return (payload) => {
+    store.dispatch(action(payload));
   };
 }
+function wrapFunctionsWithDispatch(actions, store) {
+  return Object.fromEntries(Object.entries(actions).map(([key, value]) => [key, wrapWithDispatch(value, store)]));
+}
 function extractActions(slices, store) {
-  return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, wrapWithDispatch(value.actions, store)]));
+  return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, wrapFunctionsWithDispatch(value.actions, store)]));
 }
 function register(slices) {
   const reducers = extractReducers(slices);
   const store = configureStore({ reducer: reducers });
   const actions = extractActions(slices, store);
   const dispatch = actions;
-  const useStore = (fn) => useSelector(fn);
+  const useStore = useSelector;
   const StoreProvider = (props) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Provider, { store, children: props.children });
   const getState = () => {
     return store.getState();
@@ -3156,7 +3159,8 @@ function register(slices) {
     useStore,
     // For actions
     getState,
-    dispatch
+    dispatch,
+    store
   };
 }
 export {
