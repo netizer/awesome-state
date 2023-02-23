@@ -11,10 +11,10 @@ type FixState<H extends Record<string, any> = Record<string, any>> = {
 };
 declare function register<FixStateStates extends Record<string, any>, S extends Record<string, any>>(slices: FixState<FixStateStates> & S): {
     StoreProvider: (props: any) => JSX.Element;
-    useStore: TypedUseSelectorHook<FixStateStates>;
+    useSelector: TypedUseSelectorHook<FixStateStates>;
     getState: () => FixStateStates;
     dispatch: FixState<FixStateStates> & S extends infer T extends Record<string, any> ? { [W in keyof T]: (FixState<FixStateStates> & S)[W]["actions"]; } : never;
     store: _reduxjs_toolkit_dist_configureStore.ToolkitStore<FixStateStates, redux.AnyAction, [_reduxjs_toolkit.ThunkMiddleware<FixStateStates, redux.AnyAction, undefined>]>;
 };
 
-export { FixState, register };
+export { register };

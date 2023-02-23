@@ -192,3 +192,7 @@ const authTokenSlice = createSlice({
 
 export const slices = [authTokenSlice]
 ```
+
+# Things to have in mind
+
+1. If you use Awesome State, use react-redux only through Awesome State (by importing react-redux functionalities such as `store` or `useSelector` from Awesome State). Otherwise you may run into weird issues. For example if you use Provider from react-redux, instead of StoreProvider from Awesome State, useSelector from Awesome State will not be aware of the Provider being there. That is not an issue specific to Awesome State, but rather the consequence of the way packages are organised in Node.js.

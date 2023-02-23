@@ -1,11 +1,11 @@
 {
   "name": "awesome-state",
-  "version": "0.0.15",
+  "version": "0.0.23",
   "description": "A boilerplate-free global state management for React, built on top of redux/toolkit.",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "scripts": {
-    "build": "tsup src/index.tsx",
+    "build": "tsup src/index.ts",
     "start": "npm run build -- --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

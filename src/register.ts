@@ -1,13 +1,12 @@
-import React from 'react'
-import { TypedUseSelectorHook, useSelector } from 'react-redux'
-import { Provider } from 'react-redux';
+import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-redux'
 import { configureStore, Reducer } from '@reduxjs/toolkit'
+import { generateStoreProvider } from './storeProvider'
 
 function extractReducers<S extends Record<string, any>>(slices: S) {
   return Object.fromEntries(Object.entries(slices).map(([key, value]) => [key, value.reducer])) as {[W in keyof typeof slices]: (typeof slices)[W]["reducer"]}
 }
 
-function wrapWithDispatch<State extends any, Payload extends any, S extends (payload: Payload) => any, T extends { dispatch: (action: S) => void}>(action: S, store: T) {
+function wrapWithDispatch<Payload extends any, S extends (payload: Payload) => any, T extends { dispatch: (action: S) => void}>(action: S, store: T) {
   return ((payload: Payload) => {
     store.dispatch(action(payload))
   }) as S
@@ -29,7 +28,7 @@ export type FixState<H extends Record<string, any> = Record<string, any>> = {
 }
 
 /*
-The typing of the function register should be like this:
+The typing of the function register should actually be like this:
 function register<S extends Record<string, any>>(slices: S) {...}
 
 But there seems to be a bug either in @redux/toolkit or in TypeScript
@@ -46,16 +45,10 @@ fixes the issue.
 export function register<FixStateStates extends Record<string, any>, S extends Record<string, any>>(slices: FixState<FixStateStates> & S) {
   const reducers = extractReducers(slices)
   const store = configureStore({ reducer: reducers })
-  const actions = extractActions(slices, store)
+  const dispatch = extractActions(slices, store)
 
-  const dispatch = actions
-
-  const useStore: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector
-  const StoreProvider = (props: any) => (
-    <Provider store={store}>
-      {props.children}
-    </Provider>
-  )
+  const StoreProvider = generateStoreProvider(store)
+  const useSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useReduxSelector
   const getState = () => {
     return store.getState()
   }
@@ -63,7 +56,7 @@ export function register<FixStateStates extends Record<string, any>, S extends R
   return {
     // For components
     StoreProvider,
-    useStore,
+    useSelector,
     // For actions
     getState,
     dispatch,
