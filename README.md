@@ -2,8 +2,6 @@
 
 A boilerplate-free global state management for React, built on top of redux/toolkit.
 
-# Why Awesome State?
-
 Awesome State is the simplest way to manage state in a React application. It's build on top of redux and redux/toolkit. Why would you use it instead of using redux/toolkit directly? Because Awesome State prioritises the comfort of the developer and provides a simple and powerful interface for managing your state. There is no boilerplate.
 
 ## Why not just use React?
