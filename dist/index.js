@@ -3184,6 +3184,7 @@ function register(slices) {
     // For actions
     getState,
     dispatch,
+    // For direct access to redux/toolkit
     store
   };
 }

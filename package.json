@@ -1,6 +1,6 @@
 {
   "name": "awesome-state",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "A boilerplate-free global state management for React, built on top of redux/toolkit.",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
