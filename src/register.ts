@@ -60,6 +60,7 @@ export function register<FixStateStates extends Record<string, any>, S extends R
     // For actions
     getState,
     dispatch,
+    // For direct access to redux/toolkit
     store
   }
 }
