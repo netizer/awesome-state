@@ -52,9 +52,44 @@ npm add awesome-state
 
 # Usage
 
-First, add StoreProvider to your `index.js`
+First create `store.js`
 
-`index.js`
+```js
+import { slices } from './slices'
+import { register } from 'awesome-state'
+
+export const { StoreProvider, dispatch, getState, useSelector, store } = register(slices)
+```
+
+and define slices in `slices.ts`
+
+```ts
+import { createSlice } from '@reduxjs/toolkit'
+
+const authTokenSlice = createSlice({
+  name: 'authToken',
+  initialState: {
+    /*
+      false - not set yet
+      null/undefined - logged out
+      string - logged in
+    */
+    value: false,
+  },
+  reducers: {
+    set: (state, action) => {
+      state.value = action.payload
+    },
+    reset: (state) => {
+      state.value = null
+    }
+  },
+})
+
+export const slices = [authTokenSlice]
+```
+
+Then add StoreProvider to your `index.js`
 
 ```js
 import React from 'react';
@@ -74,9 +109,7 @@ ReactDOM.render(
 
 Let's say you have one file `actions.js` and all the mutable actions (changing the global state, connecting to the server) are there. Of course you could well enough have an `actions` directory and split your code into several files.
 
-You can use `getState` and `dispatch` as follows:
-
-`actions.js`
+You can use `getState` and `dispatch` in `actions.js` as follows:
 
 ```js
 import {
@@ -115,13 +148,15 @@ dispatch.authToken.set(authToken)
 Now, to use information from the global state in your component, you can do the following:
 
 ```js
-import { useSelector } from 'react-redux'
+import { useSelector } from './store'
 export function Budget() {
   const budget = useSelector((state) => state.currentUser.budget)
 }
 ```
 
-And to cause the change of the state, you can call the action from the component:
+Because you use `useSelector` from Awesome State in here, it's already "aware" of your slices, so you will get code completion when defining the selector.
+
+To call the `logIn` action defined above, you can just import it from the component:
 
 ```js
 import {
@@ -159,38 +194,6 @@ export function Login() {
 }
 ```
 
-So basically state is referred from only 2 places:
-- `<Provider store={store}>` part to make sure that you can use `useSelector` in your components to access the state.
-- `store.dispatch(actions.authToken.set(authToken))` or similar mix of store.dispatch and actions  to change the global state.
-
-Now how to define actions? Here it is:
-
-```js
-import { createSlice } from '@reduxjs/toolkit'
-
-const authTokenSlice = createSlice({
-  name: 'authToken',
-  initialState: {
-    /*
-      false - not set yet
-      null/undefined - logged out
-      string - logged in
-    */
-    value: false,
-  },
-  reducers: {
-    set: (state, action) => {
-      state.value = action.payload
-    },
-    reset: (state) => {
-      state.value = null
-    }
-  },
-})
-
-export const slices = [authTokenSlice]
-```
-
 # Things to have in mind
 
-1. If you use Awesome State, use react-redux only through Awesome State (by importing react-redux functionalities such as `store` or `useSelector` from Awesome State). Otherwise you may run into weird issues. For example if you use Provider from react-redux, instead of StoreProvider from Awesome State, useSelector from Awesome State will not be aware of the Provider being there. That is not an issue specific to Awesome State, but rather the consequence of the way packages are organised in Node.js.
+1. If you use Awesome State, I recommend to use react-redux only through Awesome State (by importing react-redux functionalities such as `store` from Awesome State). Otherwise you may run into weird issues. For example if you use Provider from react-redux, instead of StoreProvider from Awesome State, useSelector from Awesome State will not be aware of the Provider being there. That is not an issue specific to Awesome State, but rather the consequence of the way packages are organised in Node.js.
